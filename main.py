@@ -1,5 +1,5 @@
 '''
-repo:
+repo: https://github.com/17-qxm/robot_use
 '''
 
 import time
@@ -30,7 +30,7 @@ Debug = 0
 
 # 不同色块的hsv范围
 color_range = {
-    'green': [(  53 , 124 , 85),( 78, 255, 124 )],
+    'green': [(  75 , 109 , 77),( 91, 159, 101 )],
     'orange': [( 11 , 212 , 121 ),( 14 , 255 , 161 )]
 }
 
@@ -193,11 +193,11 @@ def find_box(img,color_name):
         time.sleep(0.3)
     else:
         box_img = img
-        # box_img_bgr = cv2.cvtColor(box_img, cv2.COLOR_RGB2BGR)  # 将图片转换到BRG空间
+        box_img_bgr = cv2.cvtColor(box_img, cv2.COLOR_RGB2BGR)  # 将图片转换到BRG空间
         box_img_hsv = cv2.cvtColor(box_img, cv2.COLOR_BGR2HSV)  # 将图片转换到HSV空间
         box_img = cv2.GaussianBlur(box_img_hsv, (3, 3), 0)  # 高斯模糊
         box_img_mask = cv2.inRange(box_img, color_range[color_name][0], color_range[color_name][1])  # 二值化
-        # box_img_closed = cv2.erode(box_img_mask, None, iterations=2)  # 腐蚀
+        box_img_closed = cv2.erode(box_img_mask, None, iterations=2)  # 腐蚀
         box_img_opened = cv2.dilate(box_img_mask, np.ones((4, 4), np.uint8), iterations=2)  # 膨胀    先腐蚀后运算等同于开运算
         (contours, hierarchy) = cv2.findContours(box_img_opened, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         if len(contours) != 0:
@@ -252,6 +252,7 @@ def goto_box():
                 time.sleep(0.5)
             else:
                 print("开始抱箱子")
+                base_action.action("FastForward1s")
                 base_action.action("Forwalk01")
                 base_action.action("GrabCube2")
                 base_action.action("LiftCubeUp2")
@@ -523,4 +524,4 @@ if __name__ == '__main__':
                             go_fast2(2)
                             ID = 0
                             level = "start_box"
-            # time.sleep(0.1)
+            time.sleep(0.1)
