@@ -30,7 +30,7 @@ Debug = 0
 
 # 不同色块的hsv范围
 color_range = {
-    'green': [(  75 , 109 , 77),( 91, 159, 101 )],
+    'green': [(  43 , 142 , 80),( 50, 255, 135 )],
     'orange': [( 11 , 212 , 121 ),( 14 , 255 , 161 )]
 }
 
@@ -148,7 +148,7 @@ def BoxL_turn2(n):           #左转
     for i in  range (0,n):
         base_action.action("BoxLeftTurn1s2")
         time.sleep(1)
-def R_turn1 (n):           #右转 
+def R_turn1 (n):           #右转
     for i in  range (0,n):
         base_action.action("turn003R")
         time.sleep(0.5)
@@ -221,42 +221,72 @@ def find_box(img,color_name):
 #搬箱子
 def goto_box():
     global level, ID
-    if chest_circle_x is None :
+    if chest_circle_x is None:
         print('等待中获取坐标中...')
         time.sleep(0.3)
-    else:
-        if chest_circle_x < 275:
-            print("正在左侧移 ",chest_circle_x)
+        return
+    
+    for _ in range(20):
+        if level == "end_box":
+            break
+        
+        find_box(Chest_img, 'green')
+        
+        if chest_circle_x is None:
+            print('等待坐标中...')
+            time.sleep(0.3)
+            continue
+        
+        x = chest_circle_x
+        y = chest_circle_y
+        
+        # 1. 先检查是否到达抱块区域（x:285~355, y:280~375）
+        if 285 <= x <= 355 and 310 <= y <= 375:
+            print("开始抱箱子 x={:.1f} y={:.1f}".format(x, y))
+            go_fast(2)
+            time.sleep(0.5)
+            base_action.action("GrabCube2")
+            time.sleep(0.5)
+            base_action.action("LiftCubeUp2")
+            level = "end_box"
+            break
+        
+        # 2. x大步调整（远离目标范围时）
+        if x < 280:
+            print("左侧移 {:.1f}".format(x))
             base_action.action("Left3move")
-            time.sleep(0.5)
-        elif chest_circle_x < 295: 
-            print("正在左侧移 ",chest_circle_x)
-            base_action.action("Left02move")
-            time.sleep(0.5)
-        elif chest_circle_x > 365:    
-            print("正在右侧移 ",chest_circle_x)
+            time.sleep(0.8)
+        elif x > 355:
+            print("右侧移 {:.1f}".format(x))
             base_action.action("Right3move")
-            time.sleep(0.5)
-        elif chest_circle_x > 345:    
-            print("正在右侧移 ",chest_circle_x)
+            time.sleep(0.8)
+        # 3. x微调（接近但未对准）
+        elif x < 295:
+            print("左侧微调 {:.1f}".format(x))
+            base_action.action("Left02move")
+            time.sleep(0.8)
+        elif x > 345:
+            print("右侧微调 {:.1f}".format(x))
             base_action.action("Right02move")
-            time.sleep(0.5)
-        else:
-            if chest_circle_y < 300:  
-                print("前进",chest_circle_y)
-                base_action.action("FastForward1s")
-                time.sleep(0.5)
-            elif chest_circle_y >= 340:  
-                print("后退",chest_circle_y)
-                base_action.action("Back1Run")
-                time.sleep(0.5)
-            else:
-                print("开始抱箱子")
-                base_action.action("FastForward1s")
-                base_action.action("Forwalk01")
-                base_action.action("GrabCube2")
-                base_action.action("LiftCubeUp2")
-                level = "end_box"
+            time.sleep(0.8)
+        # 4. y大步调整
+        elif y < 280:
+            print("前进 {:.1f}".format(y))
+            base_action.action("FastForward1s")
+            time.sleep(0.8)
+        elif y > 375:
+            print("后退 {:.1f}".format(y))
+            base_action.action("Back1Run")
+            time.sleep(0.8)
+        # 5. y微调
+        elif y < 310:
+            print("前进微调 {:.1f}".format(y))
+            base_action.action("Forwalk01")
+            time.sleep(0.8)
+        elif y > 370:
+            print("后退微调 {:.1f}".format(y))
+            base_action.action("Back2Run")
+            time.sleep(0.8)
 
 
 # ***************************************tag对正****************************************
@@ -445,8 +475,10 @@ if __name__ == '__main__':
                         if ID == 2:
                             result = turn_to_tag(robot_tag_x, robot_tag_y, tag_yaw, 0.12 , 0.0 , 0)
                             if result == True:
-                                print('二号码对正完毕，右侧移对正三号码')
+                                print('二号码对正完毕，小左转后右侧移对正三号码')
                                 ID += 1
+                                BoxL_turn1(1)   # 小幅左转
+                                time.sleep(0.5)
                                 BoxR_move2(3)
                         else:
                             print("右移")
@@ -475,6 +507,7 @@ if __name__ == '__main__':
                             if result == True:
                                 print('四号码对正完毕，左移对正五号码')
                                 ID += 1
+                                # 这一部分记得改，这一段绝对不会是正确的
                                 box_go1(1)
                                 BoxL_move2(4)
                                 box_go2(4)
