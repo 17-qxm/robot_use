@@ -30,7 +30,7 @@ Debug = 0
 
 # 不同色块的hsv范围
 color_range = {
-    'green': [(  43 , 142 , 80),( 50, 255, 135 )],
+    'green': [(  41 , 146 , 107),( 49, 255, 123 )],
     'orange': [( 11 , 212 , 121 ),( 14 , 255 , 161 )]
 }
 
@@ -243,7 +243,7 @@ def goto_box():
         # 1. 先检查是否到达抱块区域（x:285~355, y:280~375）
         if 285 <= x <= 355 and 310 <= y <= 375:
             print("开始抱箱子 x={:.1f} y={:.1f}".format(x, y))
-            go_fast(2)
+            go_fast(1)
             time.sleep(0.5)
             base_action.action("GrabCube2")
             time.sleep(0.5)
@@ -508,9 +508,9 @@ if __name__ == '__main__':
                                 print('四号码对正完毕，左移对正五号码')
                                 ID += 1
                                 # 这一部分记得改，这一段绝对不会是正确的
-                                box_go1(1)
-                                BoxL_move2(4)
-                                box_go2(4)
+                                # box_go1(1)
+                                BoxL_move2(5)
+                                # box_go2(4)
                         else:
                             print("左移")
                             BoxL_move2(1)
@@ -520,7 +520,7 @@ if __name__ == '__main__':
                             result = turn_to_tag(robot_tag_x, robot_tag_y, tag_yaw, 0.12 , 0.0 , 0)
                             if result == True:
                                 print('五号码对正完毕，前进至大本营并放下海绵块')
-                                box_go2(3)
+                                box_go2(5)
                                 Box_Down(1)
                                 R_turn2(3)
                                 step = 2
