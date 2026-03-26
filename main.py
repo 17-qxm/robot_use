@@ -87,13 +87,13 @@ def box_go1(n):    #抱着箱子前进一步
         base_action.action("BoxForward1s2")
         time.sleep(1)
 def box_go2(n):     #抱着箱子前进两步
-    # for i in range (0,n):
-    #     base_action.action("BoxForward2s2")
-    #     time.sleep(1.6)
+    for i in range (0,n):
+        base_action.action("BoxForward2s2")
+        time.sleep(1.5)
     # box_go1(2*n)
-    for i in range (0,n*2):
-        base_action.action("BoxForward1s2")
-        time.sleep(0.8)
+    # for i in range (0,n*2):
+    #     base_action.action("BoxForward1s2")
+    #     time.sleep(0.8)
 def box_go3(n):     #抱着箱子前进三步
     for i in range (0,n):
         base_action.action("BoxForward3s2")
@@ -197,11 +197,12 @@ def find_box(img,color_name):
         time.sleep(0.3)
     else:
         box_img = img
-        box_img_bgr = cv2.cvtColor(box_img, cv2.COLOR_RGB2BGR)  # 将图片转换到BRG空间
+        # 这些东西还是阴魂不散，我觉得没救了，这两行对实际运作没有作用，我直接注释掉
+        # box_img_bgr = cv2.cvtColor(box_img, cv2.COLOR_RGB2BGR)  # 将图片转换到BRG空间
         box_img_hsv = cv2.cvtColor(box_img, cv2.COLOR_BGR2HSV)  # 将图片转换到HSV空间
         box_img = cv2.GaussianBlur(box_img_hsv, (3, 3), 0)  # 高斯模糊
         box_img_mask = cv2.inRange(box_img, color_range[color_name][0], color_range[color_name][1])  # 二值化
-        box_img_closed = cv2.erode(box_img_mask, None, iterations=2)  # 腐蚀
+        # box_img_closed = cv2.erode(box_img_mask, None, iterations=2)  # 腐蚀
         box_img_opened = cv2.dilate(box_img_mask, np.ones((4, 4), np.uint8), iterations=2)  # 膨胀    先腐蚀后运算等同于开运算
         (contours, hierarchy) = cv2.findContours(box_img_opened, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         if len(contours) != 0:
@@ -296,7 +297,7 @@ def goto_box():
 # ***************************************tag对正****************************************
 def turn_to_tag(dis_x, dis_y, theta, x_offset=0, y_offset=0, theta_offset=0, x_threshold=0.04, y_threshold=0.03, theta_threshold=9):
     is_turn_done = False
-    check_flag = 0
+    # check_flag = 0
 
     x_error = dis_x-x_offset
     y_error = dis_y-y_offset
@@ -455,6 +456,10 @@ if __name__ == '__main__':
                 elif (ID == 1 and level == "start_moving") or ID == 2 or ID == 3 or ID == 4 or (ID == 5 and step == 1):
                     print("抱着箱子后退")
                     Box_Back(1)
+                    # 这个地方之前出现了问题，我加了一个变量但是也没有解决
+                    # 这让我感到有一丝害怕，我没有足够的时间去慢慢磨这个了
+                    # 这回有一定概率让机器人走不到tag1，因为它根本走不到那个地方
+                    # 听天由命吧
                 elif (ID == 5 and step == 2 and level == "start_moving"):
                     print("右转")
                     R_turn2(1)
