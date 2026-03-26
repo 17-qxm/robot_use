@@ -1,5 +1,7 @@
 '''
 repo: https://github.com/17-qxm/robot_use
+这是我的仓库和代码，苍天明鉴
+在终端使用 git clone github.com/17-qxm/robot_use.git 克隆本项目
 '''
 
 import time
