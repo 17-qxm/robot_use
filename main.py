@@ -30,7 +30,7 @@ Debug = 0
 
 # 不同色块的hsv范围
 color_range = {
-    'green': [(  41 , 146 , 107),( 49, 255, 123 )],
+    'green': [(  43 , 142 , 80),( 50, 255, 135 )],
     'orange': [( 11 , 212 , 121 ),( 14 , 255 , 161 )]
 }
 
@@ -87,9 +87,13 @@ def box_go1(n):    #抱着箱子前进一步
         base_action.action("BoxForward1s2")
         time.sleep(1)
 def box_go2(n):     #抱着箱子前进两步
-    for i in range (0,n):
-        base_action.action("BoxForward2s2")
-        time.sleep(1)
+    # for i in range (0,n):
+    #     base_action.action("BoxForward2s2")
+    #     time.sleep(1.6)
+    # box_go1(2*n)
+    for i in range (0,n*2):
+        base_action.action("BoxForward1s2")
+        time.sleep(0.8)
 def box_go3(n):     #抱着箱子前进三步
     for i in range (0,n):
         base_action.action("BoxForward3s2")
@@ -243,7 +247,7 @@ def goto_box():
         # 1. 先检查是否到达抱块区域（x:285~355, y:280~375）
         if 285 <= x <= 355 and 310 <= y <= 375:
             print("开始抱箱子 x={:.1f} y={:.1f}".format(x, y))
-            go_fast(1)
+            go_fast(2)
             time.sleep(0.5)
             base_action.action("GrabCube2")
             time.sleep(0.5)
@@ -427,9 +431,15 @@ if __name__ == '__main__':
                 time.sleep(0.1)
             elif level == "end_box":
                 if step == 1:
-                    box_go2(3)
+                    box_go2(1)
+                    time.sleep(0.5)
+                    box_go1(2)
+                    time.sleep(0.5)
+                    box_go1(2)
+                    time.sleep(0.5)
                     BoxR_turn2(1)
                     box_go1(1)
+                    time.sleep(0.5)
                 elif step == 2:
                     BoxR_turn2(3)
                     step = 1
@@ -466,7 +476,9 @@ if __name__ == '__main__':
                                 print('一号码对正完毕，前进对正二号码')
                                 ID += 1
                                 box_go2(3)
+                                time.sleep(0.7)
                                 box_go1(1) 
+                                time.sleep(0.7)
                         else:
                             print("前进")
                             box_go2(2)
@@ -477,9 +489,12 @@ if __name__ == '__main__':
                             if result == True:
                                 print('二号码对正完毕，小左转后右侧移对正三号码')
                                 ID += 1
-                                BoxL_turn1(1)   # 小幅左转
-                                time.sleep(0.5)
-                                BoxR_move2(3)
+                                BoxL_turn1(2)   # 小幅左转
+                                time.sleep(0.9)
+                                BoxR_move2(1)
+                                time.sleep(0.9)
+                                BoxR_move2(1) 
+
                         else:
                             print("右移")
                             BoxR_move2(1)
@@ -492,8 +507,12 @@ if __name__ == '__main__':
                                 ID += 1
                                 BoxR_move2(1)
                                 BoxR_move1(1)
+                                time.sleep(0.6)
                                 box_go2(3)
+                                time.sleep(0.6)
                                 box_go1(2)
+                                time.sleep(0.6)
+                                
                                 
                                 
                         else:
@@ -509,7 +528,7 @@ if __name__ == '__main__':
                                 ID += 1
                                 # 这一部分记得改，这一段绝对不会是正确的
                                 # box_go1(1)
-                                BoxL_move2(5)
+                                BoxL_move2(4)
                                 # box_go2(4)
                         else:
                             print("左移")
@@ -520,7 +539,10 @@ if __name__ == '__main__':
                             result = turn_to_tag(robot_tag_x, robot_tag_y, tag_yaw, 0.12 , 0.0 , 0)
                             if result == True:
                                 print('五号码对正完毕，前进至大本营并放下海绵块')
-                                box_go2(5)
+                                box_go2(2)
+                                time.sleep(0.2)
+                                box_go2(2)
+                                time.sleep(0.2)
                                 Box_Down(1)
                                 R_turn2(3)
                                 step = 2
